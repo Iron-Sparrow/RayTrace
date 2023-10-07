@@ -105,7 +105,7 @@ for i, y in enumerate(np.linspace(screen.top, screen.bottom, screen.resolution[1
         is_shadowed = min_distance < intersection_to_light_distance
 
         if is_shadowed:
-            continue
+            break
 
         illumination = np.zeros((3))
 
