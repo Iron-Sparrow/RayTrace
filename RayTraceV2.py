@@ -26,3 +26,6 @@ def Sphere_Intersect(position, radius:float, ray_origin, ray_direction):
         if t1 > 0 and t2 > 0:
             return min(t1, t2)
     return None
+    
+def Divide_Res():
+    pass
