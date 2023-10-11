@@ -27,5 +27,9 @@ def Sphere_Intersect(position, radius:float, ray_origin, ray_direction):
             return min(t1, t2)
     return None
     
+def Nearest_Intersected_Sphere(sphere_list:list, ray_origin, ray_direction):
+    for sphere in sphere_list:
+        #distances
+    
 def Divide_Res():
     pass
