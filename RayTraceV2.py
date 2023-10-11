@@ -26,10 +26,11 @@ def Sphere_Intersect(position, radius:float, ray_origin, ray_direction):
         if t1 > 0 and t2 > 0:
             return min(t1, t2)
     return None
-    
+
 def Nearest_Intersected_Sphere(sphere_list:list, ray_origin, ray_direction):
+    distances =[]
     for sphere in sphere_list:
-        #distances
-    
+       distances.append(Sphere_Intersect(sphere.world_position, sphere.radius, ray_origin, ray_direction)) 
+    nearest_sphere = None
 def Divide_Res():
     pass
