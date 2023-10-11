@@ -4,6 +4,17 @@ import matplotlib.pyplot as plt
 from uuid import uuid5, uuid4
 import multiprocessing as mpr
 
+def Convert255to1(x:int) -> float:
+    if x not in range(0, 255):
+        raise ValueError(f"Input not valid (0-255), {x}")
+    return float(x)/255
+
+def M_Square(x:float) -> float:
+    return (x*x)
+
+def M_Cube(x:float) -> float:
+    return(x*x*x)
+
 def ToNP(x, y, z):
     return np.array([x,y,z])
 
@@ -65,7 +76,6 @@ class Screen():
         self.top = 1.0 / (float(x)/y)
         self.bottom = -1.0 / (float(x)/y)
 
-
 class Camera():
     def __init__(self, x:float, y:float, z:float, fov:float, near:float, far:int):
         self.world_position = np.array([x, y, z])
@@ -75,14 +85,14 @@ class Camera():
 
 
 def Main():            
-    screen = Screen(160, 100)
+    screen = Screen(288, 180)
     camera = Camera(0, 0, 1, 60.0, 0.01, 32_000)
 
     max_depth = 8
 
-    material0 = Material(ToNP(0.1, 0, 0), ToNP(.7, 0, 0), ToNP(1, 1, 1), 100, .5)
-    material1 = Material(ToNP(0.1, 0, 0.1), ToNP(.7, 0, 0.7), ToNP(1, 1, 1), 100, .3)
-    material2 = Material(ToNP(0, 0.1, 0), ToNP(0, 0.6, 0), ToNP(1, 1, 1), 100, .7)
+    material0 = Material(ToNP(Convert255to1(45), 0, 0), ToNP(.7, 0, 0), ToNP(1, 1, 1), 100, M_Square(.5))
+    material1 = Material(ToNP(0.1, 0, 0.1), ToNP(.7, 0, 0.7), ToNP(1, 1, 1), 100, M_Square(.3))
+    material2 = Material(ToNP(0, 0.1, 0), ToNP(0, 0.6, 0), ToNP(1, 1, 1), 100, M_Square(.7))
     lightmat = Material(ToNP(1, 1, 1), ToNP(1, 1, 1), ToNP(1, 1, 1), None, None)
     planemat = Material(ToNP(0.1, 0.1, 0.1), ToNP(.6, .6, .6), ToNP(1, 1, 1), 100, 1)
 
@@ -141,6 +151,7 @@ def Main():
             image[i, j]= np.clip(colour, 0, 1)
         print("Progress: %d/%d" % (i + 1, screen.resolution[1]))
 
+    plt.imshow(image)
     plt.imsave(f'{(uuid5(uuid4(), "Image").hex)[:8]}.png', image)
 
 

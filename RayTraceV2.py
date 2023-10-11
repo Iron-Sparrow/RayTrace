@@ -18,7 +18,7 @@ def Reflect(vector, axis):
 
 def Sphere_Intersect(position, radius:float, ray_origin, ray_direction):
     b = 2 * np.dot(ray_direction, ray_origin - position)
-    c = np.linalg.norm(ray_origin - origin) ** 2 - radius ** 2
+    c = np.linalg.norm(ray_origin - position) ** 2 - radius ** 2
     delta = b ** 2 - 4 * c
     if delta >= 0:
         t1 = (-b + np.sqrt(delta)) / 2
@@ -32,5 +32,29 @@ def Nearest_Intersected_Sphere(sphere_list:list, ray_origin, ray_direction):
     for sphere in sphere_list:
        distances.append(Sphere_Intersect(sphere.world_position, sphere.radius, ray_origin, ray_direction)) 
     nearest_sphere = None
+    min_dist = np.inf
+    for ind, dist in enumerate(distances):
+        if dist and dist < min_dist:
+            min_dist = dist
+            nearest_sphere = sphere_list[ind]
+        return nearest_sphere, min_dist
 def Divide_Res():
+    pass
+
+class Object():
+    pass
+
+class Sphere():
+    pass
+
+class Triangle():
+    pass
+
+class Material():
+    pass
+
+class Screen():
+    pass
+
+class Camera():
     pass
