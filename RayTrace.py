@@ -68,7 +68,7 @@ class Object():
                 self.radius = radius
         
 class Screen():
-    def __init__(self, x:float, y:float):
+    def __init__(self, x:int, y:int):
         self.resolution = x, y
         self.ratio = x/y
         self.left = -1.0
