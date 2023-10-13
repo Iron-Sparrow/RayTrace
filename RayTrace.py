@@ -25,12 +25,13 @@ def Reflect(vector, axis):
     return vector - 2 * np.dot(vector, axis) * axis
 
 def Sphere_Intersect(position, radius, ray_origin, ray_direction):
+    a = 1.0
     b = 2 * np.dot(ray_direction, ray_origin - position)
     c = np.linalg.norm(ray_origin - position) ** 2 - radius ** 2
-    delta = b ** 2 - 4 * c
+    delta = b ** 2 - 4 * a * c
     if delta > 0:
-        t1 = (-b + np.sqrt(delta)) / 2
-        t2 = (-b - np.sqrt(delta)) / 2
+        t1 = (-b + np.sqrt(delta)) / (2*a)
+        t2 = (-b - np.sqrt(delta)) / (2*a)
         if t1 > 0 and t2 > 0:
             return min(t1, t2)
     return  None
@@ -85,7 +86,7 @@ class Camera():
 
 
 def Main():            
-    screen = Screen(288, 180)
+    screen = Screen(400, 250)
     camera = Camera(0, 0, 1, 60.0, 0.01, 32_000)
 
     max_depth = 8

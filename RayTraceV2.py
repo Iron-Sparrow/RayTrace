@@ -5,6 +5,7 @@ from uuid import uuid4, uuid5
 import multiprocessing as mpr
 #from pprint import pprint
 from numpy import ndarray as np_array
+from compyl.compyl import *
 
 license = '''This project is currently using the MIT license but this might (and probably will) change in the future.'''
 
@@ -16,6 +17,18 @@ def Normalize(vector):
 
 def Reflect(vector, axis):
     return vector - 2 * np.dot(vector, axis) * axis
+
+def c255to1(x:int) -> float:
+    if x not in range(0, 255):
+        raise ValueError(f"Input not valid (0-255), {x}")
+    return float(x)/255
+
+def M_Square(x:float) -> float:
+    return (x*x)
+
+def M_Cube(x:float) -> float:
+    return(x*x*x)
+
 
 def Sphere_Intersect(position, radius:float, ray_origin, ray_direction):
     b = 2 * np.dot(ray_direction, ray_origin - position)
@@ -39,8 +52,37 @@ def Nearest_Intersected_Sphere(sphere_list:list, ray_origin, ray_direction):
             min_dist = dist
             nearest_sphere = sphere_list[ind]
         return nearest_sphere, min_dist
-def Divide_Res():
-    pass
+    
+def Divide_Res(CPU_Cores: int, y: int):
+    r = int(y % CPU_Cores)
+    p = int((y - r) / CPU_Cores)
+    o = 0
+    lst = []
+    
+    if r == 0:
+        for i in range(o, y, p):
+            o += 1
+            lst.append([i + 1, o * p])
+    else:
+        for i in range(o, y - p, p):
+            o += 1
+            if r > 0:
+                r -= 1
+                try:
+                    lst.append([last + 1, last + 1 + p])
+                    last += 1 + p
+                except:
+                    lst.append([i+1, o * p + 1])
+                    last = o * p + 1
+            else:
+                try:
+                    lst.append([last + 1, last + p])
+                    last += p
+                except:
+                    lst.append([i + 1, o * p + 1])
+                    last = o * p + 1
+    return lst
+
 
 class Material():
     def __init__(self, ambient:np_array, diffuse:np_array, specular:np_array, shininess:float, reflectiveness:float) -> None:
@@ -80,3 +122,4 @@ class Camera():
         self.fov = fov
         self.near = near
         self.far = float(far)
+
