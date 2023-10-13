@@ -106,6 +106,7 @@ def Main():
     light0 = Object("Light0", 5, 5, 5, True, 'light', lightmat)
 
     sphere_list = [sphere0, sphere1, sphere2, plane0]
+    offset = 1e-05
 
     image = np.zeros((screen.resolution[1], screen.resolution[0], 3))
     for i, y in enumerate(np.linspace(screen.top, screen.bottom, screen.resolution[1])):
@@ -123,7 +124,7 @@ def Main():
 
                 intersection = origin + min_distance * direction
                 norm_to_surface = Normalize(intersection - nearest_sphere.world_position)
-                shift_point = intersection + 1e-05 * norm_to_surface
+                shift_point = intersection + offset * norm_to_surface
                 intersection_to_light = Normalize(light0.world_position - shift_point)
 
                 _, min_distance = Nearest_Intersected_Sphere(sphere_list, shift_point, intersection_to_light)

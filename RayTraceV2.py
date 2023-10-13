@@ -9,8 +9,11 @@ from compyl.compyl import *
 
 license = '''This project is currently using the MIT license but this might (and probably will) change in the future.'''
 
-def CoordToNP(x, y, z):
+def CoordValToNP(x:float, y:float, z:float) -> np_array:
     return np.array([x, y, z])
+
+def ValToNP(x:float, y:float, z:float) -> np_array:
+    return np.array([x,y,z])
 
 def Normalize(vector):
     return vector / np.linalg.norm(vector)
@@ -53,7 +56,7 @@ def Nearest_Intersected_Sphere(sphere_list:list, ray_origin, ray_direction):
             nearest_sphere = sphere_list[ind]
         return nearest_sphere, min_dist
     
-def Divide_Res(CPU_Cores: int, y: int):
+def Divide_Res(CPU_Cores: int, y: int) -> list:
     r = int(y % CPU_Cores)
     p = int((y - r) / CPU_Cores)
     o = 0
@@ -90,7 +93,10 @@ class Material():
         self.diffuse = diffuse
         self.specular = specular
         self.shininess = shininess
-        self.reflectiveness = reflectiveness * (reflectiveness > 0 and reflectiveness > 1) + 0 * (reflectiveness <= 0) + 1 * (reflectiveness >= 1)
+        try:
+            self.reflectiveness = reflectiveness * (reflectiveness > 0 and reflectiveness < 1) + 0 * (reflectiveness <= 0) + 1 * (reflectiveness >= 1)
+        except:
+            self.reflectiveness = None
 class Object():
     def __init__(self, world_positiom:np_array, type:str, material:Material, light_intensity:float = 0, radius:float = None) -> None:
         type = type.lower()
@@ -123,3 +129,13 @@ class Camera():
         self.near = near
         self.far = float(far)
 
+screen = Screen(400, 250)
+camera = Camera(CoordValToNP(0, 0, 2), 60, 0.01, 32_000)
+
+max_depth = 8
+
+material0 = Material(ValToNP(.18, 0, 0), ValToNP(.7, 0, 0), ValToNP(1, 1, 1), 100., M_Square(.5))
+material1 = Material(ValToNP(.1, 0, 0.1), ValToNP(.7, 0, .7), ValToNP(1, 1, 1), 100., M_Square(.3))
+material2 = Material(ValToNP(0, 0.123, 0), ValToNP(0, 0.6, 0), ValToNP(1, 1, 1), 100., M_Square(.7))
+lightmat = Material(ValToNP(1, 1, 1), ValToNP(1, 1, 1), ValToNP(1, 1, 1), None, None)
+planemat = Material(ValToNP(0.089, 0.102, 0.11), ValToNP(0, 0, 0), ValToNP(.5, .5, .5), 100, 1)
