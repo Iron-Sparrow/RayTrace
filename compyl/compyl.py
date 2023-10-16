@@ -50,9 +50,9 @@ def Nearest_Intersected_Sphere(sphere_list:list, ray_origin, ray_direction):
             nearest_sphere = sphere_list[ind]
     return nearest_sphere, min_dist
     
-def Divide_Res(CPU_Cores: int, y: int) -> list:
-    r = int(y % CPU_Cores)
-    p = int((y - r) / CPU_Cores)
+def Divide_Res(cores: int, y: int) -> list:
+    r = int(y % cores)
+    p = int((y - r) / cores)
     o = 0
     lst = []
     
