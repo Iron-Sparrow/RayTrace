@@ -138,7 +138,7 @@ def Render():
     sphere1 = Object(CoordToNP(.1, -.3, 0,),'sphere', material1, radius=.105)
     sphere2 = Object(CoordToNP(-.3, 0, 0,), 'sphere', material2, radius=.155)
 
-    plane0 = Object( CoordToNP(0, -15_001, -1), 'sphere', planemat, radius=15_000)
+    plane0 = Object(CoordToNP(0, -15_000.6, -1), 'sphere', planemat, radius=15_000)
 
     light0 = Object(CoordToNP(5, 5, 5), 'light', lightmat, 1, None)
 
