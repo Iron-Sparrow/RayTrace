@@ -2,7 +2,7 @@ compyl_imported = True
 
 import numpy as np
 import matplotlib.pyplot as plt
-from uuid import uuid5, uuid4
+from uuid import *
 from numpy import ndarray
 
 def CoordToNP(x:float, y:float, z:float) -> ndarray:
@@ -145,9 +145,9 @@ def Render():
     sphere_list = [sphere0, sphere1, sphere2, plane0]
     offset = 1e-05
 
-    image = np.zeros((screen.resolution[1], screen.resolution[0], 3))
-    for i, y in enumerate(np.linspace(screen.top, screen.bottom, screen.resolution[1])):
-        for j, x in enumerate(np.linspace(screen.left, screen.right, screen.resolution[0])):
+    image = np.zeros((screen.y, screen.x, 3))
+    for i, y in enumerate(np.linspace(screen.top, screen.bottom, screen.y)):
+        for j, x in enumerate(np.linspace(screen.left, screen.right, screen.x)):
             pixel = ValToNP(x, y, 0)
             origin = camera.world_position
             direction = Normalize(pixel - origin)
@@ -192,5 +192,7 @@ def Render():
             image[i, j]= np.clip(colour, 0, 1)
         print("Progress: %d/%d" % (i + 1, screen.resolution[1]))
 
+    u_u = (uuid5(UUID('{5b370c70-7181-466b-9f53-0f532e74ae20}'), str(image.tolist)).hex)
+
     plt.imshow(image)
-    plt.imsave(f'{(uuid5(uuid4(), "Image").hex)[:8]}.png', image)
+    plt.imsave(f'{(u_u)[:8]}.png', image)
