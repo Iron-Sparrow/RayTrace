@@ -1,0 +1,6 @@
+Rotating Point Anti-Aliasing (RPAA), the name might change.
+    It takes each pixel, transforms it into a point, and place that point on a circle of radius 0 < r < 1.
+    The goal is to make it random and to blur slightly the edge. 
+    This a pure theory and testing. 
+    The variables would be a r (ufloat/uhalf) for radius, by default it would be the sqrt(random (0 to 1)) (The value needs to be sqrt()), and p (ushort) for points which is how many points are placed on the circle. 
+    If the r value is random, there would be a bool that tells if the points are all on the same circle or if they're all on one, by default, the bool oc for one circle would be false.
