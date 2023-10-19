@@ -80,7 +80,6 @@ def Divide_Res(cores: int, y: int) -> list:
                     last = o * p + 1
     return lst
 
-
 class Material():
     def __init__(self, ambient:ndarray, diffuse:ndarray, specular:ndarray, shininess:float, reflectiveness:float) -> None:
         self.ambient = ambient
@@ -91,6 +90,7 @@ class Material():
             self.reflectiveness = reflectiveness * (reflectiveness > 0 and reflectiveness < 1) + 0 * (reflectiveness <= 0) + 1 * (reflectiveness >= 1)
         except:
             self.reflectiveness = None
+            
 class Object():
     def __init__(self, world_positiom:ndarray, tpe:str, material:Material, light_intensity:float = 0, radius:float = None) -> None:
         tpe = tpe.lower()

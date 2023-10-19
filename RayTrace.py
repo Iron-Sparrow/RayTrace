@@ -106,7 +106,7 @@ def Main():
     sphere1 = Object("Sphere1", .1, -.3, 0, False, 'sphere', material1, .1)
     sphere2 = Object("Sphere2", -.3, 0, 0, False, 'sphere', material2, .15)
 
-    plane0 = Object("Plane", 0, -15_001, -1, False, 'sphere', planemat, 15_000)
+    plane0 = Object("Plane", 0, -15_001, 0, False, 'sphere', planemat, 15_000)
 
     light0 = Object("Light0", 5, 5, 5, True, 'light', lightmat)
 
