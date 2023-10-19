@@ -34,8 +34,11 @@ def RPAA(r:float, n:int):
 def SSAA():
     pass
 
-def SMAA():
-    pass
-
+def SMAA(level:int):
+    if level == SMAA_LEVEL_NONE:
+    	break
+    
+    sub = (level + 1) ** 2
+    
 def ROAA():
     pass
