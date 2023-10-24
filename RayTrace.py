@@ -83,13 +83,6 @@ class Camera():
         self.near = near
         self.far = float(far)
 
-def Clamp(n:float, minf:float, maxf:float):
-    return(n * (n<maxf)*(n>minf) + maxf * (n>=maxf) + min * (n<=minf))
-
-def RPAA(r:float):
-    r = Clamp(r)
-    pass
-
 def Main():            
     screen = Screen(400, 250)
     camera = Camera(0, 0, 1, 60.0, 0.01, 32_000)

@@ -1,3 +1,4 @@
+
 import numba
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,17 +17,17 @@ def Normalize(vector:ndarray) -> ndarray:
 def Reflect(vector:ndarray, axis:ndarray) -> ndarray:
     return vector - 2 * np.dot(vector, axis) * axis
 
-@numba.njit(fastmath=True)
-def c255to1(x:int) -> float:
-    if x not in range(0, 255):
-        raise ValueError(f"Input not valid (0-255), {x}")
-    return float(x)/255
+#@numba.njit(fastmath=True)
+#def c255to1(x:int) -> float:
+    #if x not in range(0, 255):
+        #raise ValueError(f"Input not valid (0-255), {x}")
+    #return float(x)/255
 
-@numba.njit(fastmath=True)
+#@numba.njit(fastmath=True)
 def M_Square(x:float) -> float:
     return x * x
 
-@numba.njit(fastmath=True)
+#@numba.njit(fastmath=True)
 def M_Cube(x:float) -> float:
     return x * x * x
 
@@ -196,3 +197,22 @@ def Render():
 
     plt.imshow(image)
     plt.imsave(f'{uuid4().hex[:8]}.png', image)
+
+import time
+import cProfile
+import pstats
+
+Profile = True
+
+if __name__ == '__main__':
+    ot = time.time()
+    with cProfile.Profile() as pr:
+        Render()
+    print(f"{((time.time() - ot) * 1000):.2f} ms, {(time.time() - ot):.3f} s, {(1/(time.time() - ot)):.3f} Hz")
+    if Profile:
+        stats = pstats.Stats(pr)
+        stats.sort_stats(pstats.SortKey.TIME)
+        stats.dump_stats(filename="profilingV2.prof")
+        with open("profilingV2.txt", "w") as f:
+            stats.stream = f
+            stats.print_stats()

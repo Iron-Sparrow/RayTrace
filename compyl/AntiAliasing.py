@@ -1,5 +1,6 @@
 #imports
-from math import sqrt
+import numba
+from math import sqrt, pi
 import numpy as np
 from random import random, randint
 
@@ -19,8 +20,9 @@ SSAA_LEVEL_ULTRA = 6
 ##
 
 #Functions
+@numba.jit(nopython=True, fastmath=True)
 def Clamp(x, minf, maxf):
-    return (x * (x > minf) * (x < maxf) + minf * (x =< minf) + maxf * (x >= maxf))
+    return (x * (x > minf) * (x < maxf) + minf * (x <= minf) + maxf * (x >= maxf))
 
 def RPAA(r:float, n:int):
     if n < 2:
@@ -29,16 +31,20 @@ def RPAA(r:float, n:int):
         else:
             raise ValueError(f"n = {n} not valid. Please use a strictly higher than 1")
     r = (sqrt(Clamp(r, 0, 1))/2)
+    with (2*pi)/n as step:
+        pass
     
 
-def SSAA():
-    pass
+def SSAA(level:int):
+    if level == SSAA_LEVEL_NONE:
+        pass
 
 def SMAA(level:int):
     if level == SMAA_LEVEL_NONE:
-    	break
-    
-    sub = (level + 1) ** 2
+        pass
+    else:
+        sub = (level + 1) ** 2
     
 def ROAA():
+    #RPAA but with one n
     pass
