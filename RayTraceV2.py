@@ -9,7 +9,10 @@ Profile = False
 
 if __name__ == '__main__':
     ot = time.time()
-    with cProfile.Profile() as pr:
+    if Profile:
+        with cProfile.Profile() as pr:
+            Render()
+    else:
         Render()
     print(f"{((time.time() - ot) * 1000):.2f} ms, {(time.time() - ot):.3f} s, {(1/(time.time() - ot)):.3f} Hz")
     if Profile:

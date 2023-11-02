@@ -20,7 +20,7 @@ SSAA_LEVEL_ULTRA = 6
 ##
 
 #Functions
-@numba.jit(nopython=True, fastmath=True)
+@numba.njit(fastmath=True)
 def Clamp(x, minf, maxf):
     return (x * (x > minf) * (x < maxf) + minf * (x <= minf) + maxf * (x >= maxf))
 
