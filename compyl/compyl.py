@@ -3,6 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from uuid import uuid4
 from numpy import ndarray
+from random import random, randint
+from math import pi, sqrt, sin, cos
+
+sqpi = 9.869604401089358
+
+@numba.njit(fastmath=True)
+def Clamp(x:float, mi_ma:tuple[float, float]= (0, 1)) -> float:
+    return x * (mi_ma[0] < x) * (mi_ma[1] > x) + mi_ma[0] * (mi_ma[0] >= x) + mi_ma[1] * (mi_ma[1] <= x)
 
 @numba.njit(fastmath=True)
 def ToNP(x:float, y:float, z:float) -> ndarray:
@@ -52,6 +60,7 @@ def Nearest_Intersected_Sphere(sphere_list:list, ray_origin:ndarray, ray_directi
             nearest_sphere = sphere_list[ind]
     return nearest_sphere, min_dist
 
+@numba.jit(fastmath=True, nopython=False)
 def Divide_Res(cores: int, y: int) -> list:
     r = int(y % cores)
     p = int((y - r) / cores)
@@ -70,14 +79,14 @@ def Divide_Res(cores: int, y: int) -> list:
                 try:
                     lst.append([last + 1, last + 1 + p])
                     last += 1 + p
-                except:
+                except Exception:
                     lst.append([i+1, o * p + 1])
                     last = o * p + 1
             else:
                 try:
                     lst.append([last + 1, last + p])
                     last += p
-                except:
+                except Exception:
                     lst.append([i + 1, o * p + 1])
                     last = o * p + 1
     return lst
@@ -89,7 +98,7 @@ class Material():
         self.specular = specular
         self.shininess = shininess
         try:
-            self.reflectiveness = reflectiveness * (reflectiveness > 0 and reflectiveness < 1) + 0 * (reflectiveness <= 0) + 1 * (reflectiveness >= 1)
+            self.reflectiveness = Clamp(reflectiveness)
         except:
             self.reflectiveness = None
             
