@@ -104,7 +104,7 @@ def Main():
     light0 = Object("Light0", 5, 5, 5, True, 'light', lightmat)
 
     sphere_list = [sphere0, sphere1, sphere2, plane0]
-    offset = 1e-05
+    offset = 1e-5
 
     image = np.zeros((screen.resolution[1], screen.resolution[0], 3))
     for i, y in enumerate(np.linspace(screen.top, screen.bottom, screen.resolution[1])):

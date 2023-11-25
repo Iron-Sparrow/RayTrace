@@ -1,5 +1,6 @@
 from glumpy import app, gloo, gl
-from compyl.compyl3 import *
+from compyl.compyl30 import *
+
 glsl_code_example = '''void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     // Define the camera position and direction

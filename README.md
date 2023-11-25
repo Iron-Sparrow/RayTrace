@@ -14,9 +14,7 @@ The V2 is an upgraded V1, it adds multiple features including but not limited to
 
 * Using a faster method using .pyc files.
 * Having a better material system.
-* ~~Adding two types of Anti-Aliasing(SSAA, SMAA)~~, not done yet.
 * Using numba to make the code faster.
-* ~~Custom Anti-Aliasing techinique (RPAA) and its cut down version (ROAA)~~, not done yet.
 
 ### V3 - Not ready yet, only project
 
@@ -30,4 +28,9 @@ The V1 one is a copy of the medium article code using another system for the mat
 
 ### V2
 
-The V2 is an upgrade to the V1. <br> It uses a simpler and better material system and proposes more features with a faster runtime thanks to numba. 
+The V2 is an upgrade to the V1.
+It uses a simpler and better material system and proposes more features with a faster runtime thanks to numba.
+
+### V2.1
+
+The V2.1 is a complete rewrite from scratch that is trying to be realtime.

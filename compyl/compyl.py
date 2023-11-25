@@ -26,9 +26,8 @@ def Reflect(vector:ndarray, axis:ndarray) -> ndarray:
 
 @numba.njit(fastmath=True)
 def c255to1(x:int) -> float:
-    if x not in range(0, 255):
-        raise ValueError(f"Input not valid (0-255), {x}")
-    return float(x)/255
+    x:float = Clamp(x, (0, 255))
+    return x/255
 
 @numba.njit(fastmath=True)
 def M_Square(x:float) -> float:
@@ -41,16 +40,16 @@ def M_Cube(x:float) -> float:
 @numba.njit(fastmath=True)
 def Sphere_Intersect(position:ndarray, radius:float, ray_origin:ndarray, ray_direction:ndarray) -> float | None:
     b = 2 * np.dot(ray_direction, ray_origin - position)
-    c = np.linalg.norm(ray_origin - position) ** 2 - radius ** 2
+    c = M_Square(np.linalg.norm(ray_origin - position)) - M_Square(radius)
     delta = b ** 2 - 4 * c
     if delta >= 0:
-        t1 = (-b + np.sqrt(delta)) / 2
-        t2 = (-b - np.sqrt(delta)) / 2
+        t1:float = (-b + np.sqrt(delta)) / 2
+        t2:float = (-b - np.sqrt(delta)) / 2
         if t1 > 0 and t2 > 0:
             return min(t1, t2)
     return None
 
-def Nearest_Intersected_Sphere(sphere_list:list, ray_origin:ndarray, ray_direction:ndarray) -> tuple:
+def Nearest_Intersected_Sphere(sphere_list:list, ray_origin:ndarray, ray_direction:ndarray) -> tuple[None, float]:
     distances = [Sphere_Intersect(sphere.world_position, sphere.radius, ray_origin, ray_direction)for sphere in sphere_list]
     nearest_sphere = None
     min_dist = np.inf
@@ -98,7 +97,7 @@ class Material():
         self.specular = specular
         self.shininess = shininess
         try:
-            self.reflectiveness = Clamp(reflectiveness)
+            self.reflectiveness = M_Square(Clamp(reflectiveness))
         except:
             self.reflectiveness = None
             
@@ -140,9 +139,9 @@ def Render():
 
     max_depth = 8
 
-    material0 = Material(ToNP(.18, 0, 0), ToNP(.7, 0, 0), ToNP(1, 1, 1), 100., M_Square(.5))
-    material1 = Material(ToNP(.1, 0, 0.1), ToNP(.7, 0, .7), ToNP(1, 1, 1), 100., M_Square(.3))
-    material2 = Material(ToNP(0, 0.123, 0), ToNP(0, 0.6, 0), ToNP(1, 1, 1), 100., M_Square(.7))
+    material0 = Material(ToNP(.18, 0, 0), ToNP(.7, 0, 0), ToNP(1, 1, 1), 100., .5)
+    material1 = Material(ToNP(.1, 0, 0.1), ToNP(.7, 0, .7), ToNP(1, 1, 1), 100., .3)
+    material2 = Material(ToNP(0, 0.123, 0), ToNP(0, 0.6, 0), ToNP(1, 1, 1), 100., .7)
     lightmat = Material(ToNP(1, 1, 1), ToNP(1, 1, 1), ToNP(1, 1, 1), 100, 1)
     planemat = Material(ToNP(0.189, 0.202, 0.21), ToNP(0.4, 0.4, 0.4), ToNP(.5, .5, .5), 100, 1)
     sphere0 = Object(ToNP(-2.0, 0, -1), 'sphere', material0, radius=.698)
