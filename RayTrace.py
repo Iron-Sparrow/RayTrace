@@ -151,7 +151,7 @@ def Main():
             image[i, j]= np.clip(colour, 0, 1)
         print("Progress: %d/%d" % (i + 1, screen.resolution[1]))
 
-    plt.imshow(image)
+    # plt.imshow(image)
     plt.imsave(f'{(uuid5(uuid4(), "Image").hex)[:8]}.png', image)
 
 

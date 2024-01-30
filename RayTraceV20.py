@@ -1,6 +1,5 @@
 import time
 from compyl.compyl import *
-from compyl.AntiAliasing import *
 import cProfile
 import pstats
 
@@ -8,6 +7,11 @@ RayTrace_license = '''This project is currently using the MIT license but this m
 Profile = False
 
 if __name__ == '__main__':
+    ot = time.time()
+    Render()
+    print(f"{((time.time() - ot) * 1000):.2f} ms, {(time.time() - ot):.3f} s, {(1/(time.time() - ot)):.3f} Hz")
+    
+_ = '''
     ot = time.time()
     if Profile:
         with cProfile.Profile() as pr:
@@ -24,3 +28,4 @@ if __name__ == '__main__':
         with open("profilingV2.txt", "w") as f:
             stats.stream = f
             stats.print_stats()
+'''

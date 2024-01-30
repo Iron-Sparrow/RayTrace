@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from uuid import uuid4
 from numpy import ndarray
-from random import random, randint
-from math import pi, sqrt, sin, cos
+from functools import lru_cache
 
 sqpi = 9.869604401089358
 
@@ -12,32 +11,32 @@ sqpi = 9.869604401089358
 def Clamp(x:float, mi_ma:tuple[float, float]= (0, 1)) -> float:
     return x * (mi_ma[0] < x) * (mi_ma[1] > x) + mi_ma[0] * (mi_ma[0] >= x) + mi_ma[1] * (mi_ma[1] <= x)
 
-@numba.njit(fastmath=True)
+@lru_cache(2048)
 def ToNP(x:float, y:float, z:float) -> ndarray:
     return np.array([x, y, z])
 
-@numba.njit(fastmath=True)
+@numba.njit(fastmath=True, cache=True)
 def Normalize(vector:ndarray) -> ndarray:
     return vector / np.linalg.norm(vector)
 
-@numba.njit(fastmath=True)
+@numba.njit(fastmath=True, cache=True)
 def Reflect(vector:ndarray, axis:ndarray) -> ndarray:
     return vector - 2 * np.dot(vector, axis) * axis
 
-@numba.njit(fastmath=True)
-def c255to1(x:int) -> float:
-    x:float = Clamp(x, (0, 255))
-    return x/255
+# @numba.njit(fastmath=True)
+# def c255to1(x:int) -> float:
+#     x:float = Clamp(x, (0, 255))
+#     return x/255
 
 @numba.njit(fastmath=True)
 def M_Square(x:float) -> float:
     return x * x
 
-@numba.njit(fastmath=True)
-def M_Cube(x:float) -> float:
-    return x * x * x
+# @numba.njit(fastmath=True)
+# def M_Cube(x:float) -> float:
+#     return x * x * x
 
-@numba.njit(fastmath=True)
+@numba.njit(fastmath=True, cache=True)
 def Sphere_Intersect(position:ndarray, radius:float, ray_origin:ndarray, ray_direction:ndarray) -> float | None:
     b = 2 * np.dot(ray_direction, ray_origin - position)
     c = M_Square(np.linalg.norm(ray_origin - position)) - M_Square(radius)
@@ -59,38 +58,39 @@ def Nearest_Intersected_Sphere(sphere_list:list, ray_origin:ndarray, ray_directi
             nearest_sphere = sphere_list[ind]
     return nearest_sphere, min_dist
 
-@numba.jit(fastmath=True, nopython=False)
-def Divide_Res(cores: int, y: int) -> list:
-    r = int(y % cores)
-    p = int((y - r) / cores)
-    o = 0
-    lst = []
+# def Divide_Res(cores: int, y: int) -> list:
+#     r = int(y % cores)
+#     p = int((y - r) / cores)
+#     o = 0
+#     lst = []
     
-    if r == 0:
-        for i in range(o, y, p):
-            o += 1
-            lst.append([i + 1, o * p])
-    else:
-        for i in range(o, y - p, p):
-            o += 1
-            if r > 0:
-                r -= 1
-                try:
-                    lst.append([last + 1, last + 1 + p])
-                    last += 1 + p
-                except Exception:
-                    lst.append([i+1, o * p + 1])
-                    last = o * p + 1
-            else:
-                try:
-                    lst.append([last + 1, last + p])
-                    last += p
-                except Exception:
-                    lst.append([i + 1, o * p + 1])
-                    last = o * p + 1
-    return lst
+#     if r == 0:
+#         for i in range(o, y, p):
+#             o += 1
+#             lst.append([i + 1, o * p])
+#     else:
+#         for i in range(o, y - p, p):
+#             o += 1
+#             if r > 0:
+#                 r -= 1
+#                 try:
+#                     lst.append([last + 1, last + 1 + p])
+#                     last += 1 + p
+#                 except Exception:
+#                     lst.append([i+1, o * p + 1])
+#                     last = o * p + 1
+#             else:
+#                 try:
+#                     lst.append([last + 1, last + p])
+#                     last += p
+#                 except Exception:
+#                     lst.append([i + 1, o * p + 1])
+#                     last = o * p + 1
+#     return lst
 
 class Material():
+    __slots__ = ("ambient", "diffuse", "specular", "shininess", "reflectiveness")
+
     def __init__(self, ambient:ndarray, diffuse:ndarray, specular:ndarray, shininess:float, reflectiveness:float) -> None:
         self.ambient = ambient
         self.diffuse = diffuse
@@ -102,10 +102,12 @@ class Material():
             self.reflectiveness = None
             
 class Object():
+    __slots__ = ("world_position", "tpe", "material", "light_intensity", "radius")
+
     def __init__(self, world_positiom:ndarray, tpe:str, material:Material, light_intensity:float = 0, radius:float = None) -> None:
         tpe = tpe.lower()
         self.world_position = world_positiom
-        self.type = tpe
+        self.tpe = tpe
         self.material = material
         if tpe == 'light':
             self.light_intensity = light_intensity
@@ -113,20 +115,19 @@ class Object():
             self.radius = radius
 
 class Screen():
+    __slots__ = ("resolution", "aspect_ratio", "left", "right", "top", "bottom", "x", "y")
     def __init__(self, x:int, y:int) -> None:
-        self.resolution = x, y
+        self.resolution = self.x, self.y = x, y
         self.aspect_ratio = float(x)/y
-        self.ar = float(x)/y
-        if self.ar != self.aspect_ratio:
-            raise ValueError("Problem with Screem, aspect-ratio mismatch")
         self.left = -1.0
         self.right = 1.0
         self.top = 1.0 / (float(x)/y)
         self.bottom = -1.0 / (float(x)/y)
-        self.x = x
-        self.y = y
+
 
 class Camera():
+    __slots__ = 'world_position', 'fov', 'far', 'near'
+
     def __init__(self, world_position:ndarray, fov:float, near:float, far:int) -> None:
         self.world_position = world_position
         self.fov = fov
@@ -134,7 +135,7 @@ class Camera():
         self.far = float(far)
 
 def Render():
-    screen = Screen(400, 250)
+    screen = Screen(1088, 680)
     camera = Camera(ToNP(0, 0, 2), 60, 0.01, 32_000)
 
     max_depth = 8
@@ -148,7 +149,7 @@ def Render():
     sphere1 = Object(ToNP(.1, -.3, 0,),'sphere', material1, radius=.105)
     sphere2 = Object(ToNP(-.3, 0, 0,), 'sphere', material2, radius=.155)
 
-    plane0 = Object(ToNP(0, -15_000.6666666, -1), 'sphere', planemat, radius=15_000)
+    plane0 = Object(ToNP(0, -15_001., -1), 'sphere', planemat, radius=15_000)
 
     light0 = Object(ToNP(4, 6, 5), 'light', lightmat, 1, None)
 
