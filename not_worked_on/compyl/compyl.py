@@ -28,7 +28,7 @@ def Reflect(vector:ndarray, axis:ndarray) -> ndarray:
 #     x:float = Clamp(x, (0, 255))
 #     return x/255
 
-@numba.njit(fastmath=True)
+@numba.njit(fastmath=True, cache=True)
 def M_Square(x:float) -> float:
     return x * x
 
@@ -39,7 +39,7 @@ def M_Square(x:float) -> float:
 @numba.njit(fastmath=True, cache=True)
 def Sphere_Intersect(position:ndarray, radius:float, ray_origin:ndarray, ray_direction:ndarray) -> float | None:
     b = 2 * np.dot(ray_direction, ray_origin - position)
-    c = M_Square(np.linalg.norm(ray_origin - position)) - M_Square(radius)
+    c = M_Square(np.linalg.norm(ray_origin - position)) - M_Square(radius) #type:ignore
     delta = b ** 2 - 4 * c
     if delta >= 0:
         t1:float = (-b + np.sqrt(delta)) / 2
@@ -104,7 +104,7 @@ class Material():
 class Object():
     __slots__ = ("world_position", "tpe", "material", "light_intensity", "radius")
 
-    def __init__(self, world_positiom:ndarray, tpe:str, material:Material, light_intensity:float = 0, radius:float = None) -> None:
+    def __init__(self, world_positiom:ndarray, tpe:str, material:Material, light_intensity:float = 0, radius:float|None = None) -> None:
         tpe = tpe.lower()
         self.world_position = world_positiom
         self.tpe = tpe
@@ -164,7 +164,7 @@ def Render():
             direction = Normalize(pixel - origin)
 
             colour = np.zeros((3))
-            refelection = 1
+            refelection = 0.99609375
             for k in range(max_depth):
                 #if k != 0:
                 #    print(f"DEBUG_K: {(k)}")

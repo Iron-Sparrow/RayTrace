@@ -31,8 +31,7 @@ def RPAA(r:float, n:int):
         else:
             raise ValueError(f"n = {n} not valid. Please use a strictly higher than 1")
     r = (sqrt(Clamp(r, 0, 1))/2)
-    with (2*pi)/n as step:
-        pass
+    step = 2*pi/n
     
 
 def SSAA(level:int):
